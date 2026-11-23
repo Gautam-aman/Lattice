@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -55,13 +54,13 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
-        String email = jwtService.extractEmail(request.getRefreshToken());
+        String email = jwtService.extractEmail(request.refreshToken());
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return ResponseEntity.ok(AuthResponse.builder()
                 .accessToken(jwtService.generateAccessToken(user))
-                .refreshToken(request.getRefreshToken())
+                .refreshToken(request.refreshToken())
                 .build());
     }
 
