@@ -33,5 +33,5 @@ public class Document {
     @ManyToOne
     private User createdBy;
 
-    private giLocalDateTime updatedAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }
