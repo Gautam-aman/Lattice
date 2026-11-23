@@ -3,6 +3,7 @@ package org.example.lattice.controller;
 import lombok.RequiredArgsConstructor;
 import org.example.lattice.DTO.CreateWorkspaceRequest;
 import org.example.lattice.models.Workspace;
+import org.example.lattice.service.WorkspaceService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
