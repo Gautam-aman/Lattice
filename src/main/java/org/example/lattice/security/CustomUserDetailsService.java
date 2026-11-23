@@ -1,4 +1,4 @@
-package org.example.lattice.service;
+package org.example.lattice.security;
 
 import lombok.RequiredArgsConstructor;
 import org.example.lattice.Repository.UserRepository;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

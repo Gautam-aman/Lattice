@@ -19,7 +19,18 @@ public class JwtService {
     private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration;
+    private long accessExpiration;
+
+    @Value("${jwt.refresh-expiration}")
+    private long refreshExpiration;
+
+    public String generateAccessToken(User user) {
+        return generateToken(user, accessExpiration);
+    }
+
+    public String generateRefreshToken(User user) {
+        return generateToken(user, refreshExpiration);
+    }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
@@ -29,7 +40,7 @@ public class JwtService {
                 .getPayload();
     }
 
-    public String generateToken(User user){
+    public String generateToken(User user , long expiration){
         return Jwts.builder()
                 .subject(user.getEmail())
                 .claim("userId", user.getId().toString())

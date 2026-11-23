@@ -1,7 +1,9 @@
 package org.example.lattice.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.lattice.DTO.AuthResponse;
 import org.example.lattice.DTO.LoginRequest;
+import org.example.lattice.DTO.RefreshRequest;
 import org.example.lattice.DTO.RegisterRequest;
 import org.example.lattice.Repository.UserRepository;
 import org.example.lattice.models.User;
@@ -32,7 +34,10 @@ public class AuthController {
                 .name(req.name())
                 .build();
         userRepository.save(user);
-        return ResponseEntity.ok(Map.of("token", jwtService.generateToken(user)));
+        return ResponseEntity.ok(AuthResponse.builder()
+                .accessToken(jwtService.generateAccessToken(user))
+                .refreshToken(jwtService.generateRefreshToken(user))
+                .build());
     }
 
     @PostMapping("/login")
@@ -42,7 +47,22 @@ public class AuthController {
         if (!passwordEncoder.matches(req.password(), user.getPassword())) {
             throw new RuntimeException("Invalid credentials");
         }
-        return ResponseEntity.ok(Map.of("token", jwtService.generateToken(user)));
+        return ResponseEntity.ok(AuthResponse.builder()
+                .accessToken(jwtService.generateAccessToken(user))
+                .refreshToken(jwtService.generateRefreshToken(user))
+                .build());
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(@RequestBody RefreshRequest request) {
+        String email = jwtService.extractEmail(request.getRefreshToken());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return ResponseEntity.ok(AuthResponse.builder()
+                .accessToken(jwtService.generateAccessToken(user))
+                .refreshToken(request.getRefreshToken())
+                .build());
     }
 
 }
